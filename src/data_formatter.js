@@ -165,6 +165,7 @@ export default class DataFormatter {
           locationName: datapoint[this.ctrl.panel.tableQueryOptions.labelField] || 'n/a',
           locationLatitude: latitude,
           locationLongitude: longitude,
+          locationId: datapoint[this.ctrl.panel.drilldownIdField],
           value: datapoint[this.ctrl.panel.tableQueryOptions.metricField],
           valueFormatted: datapoint[this.ctrl.panel.tableQueryOptions.metricField],
           valueRounded: 0

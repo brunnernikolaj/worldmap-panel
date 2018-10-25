@@ -35,7 +35,9 @@ const panelDefaults = {
     latitudeField: 'latitude',
     longitudeField: 'longitude',
     metricField: 'metric'
-  }
+  },
+  drillDownUrl:"/new-dashboard-copy?id={param}",
+  drilldownIdField:"id"
 
 };
 
@@ -49,11 +51,13 @@ const mapCenters = {
 };
 
 export default class WorldmapCtrl extends MetricsPanelCtrl {
-  constructor($scope, $injector, contextSrv) {
+  constructor($scope, $injector,$location, contextSrv) {
     super($scope, $injector);
 
     this.setMapProvider(contextSrv);
     _.defaults(this.panel, panelDefaults);
+
+    this.locationService = $location;
 
     this.dataFormatter = new DataFormatter(this, kbn);
 
@@ -199,6 +203,10 @@ export default class WorldmapCtrl extends MetricsPanelCtrl {
 
   setZoom() {
     this.map.setZoom(this.panel.initialZoom || 1);
+  }
+
+  setDrillDownUrl(){
+
   }
 
   toggleLegend() {

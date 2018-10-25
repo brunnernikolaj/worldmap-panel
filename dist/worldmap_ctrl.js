@@ -95,7 +95,9 @@ System.register(['app/plugins/sdk', 'app/core/time_series2', 'app/core/utils/kbn
           latitudeField: 'latitude',
           longitudeField: 'longitude',
           metricField: 'metric'
-        }
+        },
+        drillDownUrl: "/new-dashboard-copy?id={param}",
+        drilldownIdField: "id"
 
       };
       mapCenters = {
@@ -110,13 +112,15 @@ System.register(['app/plugins/sdk', 'app/core/time_series2', 'app/core/utils/kbn
       WorldmapCtrl = function (_MetricsPanelCtrl) {
         _inherits(WorldmapCtrl, _MetricsPanelCtrl);
 
-        function WorldmapCtrl($scope, $injector, contextSrv) {
+        function WorldmapCtrl($scope, $injector, $location, contextSrv) {
           _classCallCheck(this, WorldmapCtrl);
 
           var _this = _possibleConstructorReturn(this, (WorldmapCtrl.__proto__ || Object.getPrototypeOf(WorldmapCtrl)).call(this, $scope, $injector));
 
           _this.setMapProvider(contextSrv);
           _.defaults(_this.panel, panelDefaults);
+
+          _this.locationService = $location;
 
           _this.dataFormatter = new DataFormatter(_this, kbn);
 
@@ -280,6 +284,9 @@ System.register(['app/plugins/sdk', 'app/core/time_series2', 'app/core/utils/kbn
           value: function setZoom() {
             this.map.setZoom(this.panel.initialZoom || 1);
           }
+        }, {
+          key: 'setDrillDownUrl',
+          value: function setDrillDownUrl() {}
         }, {
           key: 'toggleLegend',
           value: function toggleLegend() {

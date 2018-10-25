@@ -171,12 +171,18 @@ System.register(['lodash', './libs/leaflet'], function (_export, _context) {
         }, {
           key: 'createCircle',
           value: function createCircle(dataPoint) {
+            var _this5 = this;
+
             var circle = window.L.circleMarker([dataPoint.locationLatitude, dataPoint.locationLongitude], {
               radius: this.calcCircleSize(dataPoint.value || 0),
               color: this.getColor(dataPoint.value),
               fillColor: this.getColor(dataPoint.value),
               fillOpacity: 0.5,
               location: dataPoint.key
+            });
+
+            circle.on('click', function (e) {
+              _this5.onCircleClick(e, dataPoint.locationId);
             });
 
             this.createPopup(circle, dataPoint.locationName, dataPoint.valueRounded);
@@ -196,6 +202,18 @@ System.register(['lodash', './libs/leaflet'], function (_export, _context) {
             var circleSizeRange = circleMaxSize - circleMinSize;
 
             return circleSizeRange * dataFactor + circleMinSize;
+          }
+        }, {
+          key: 'onCircleClick',
+          value: function onCircleClick(e, id) {
+            var newUrl = 'd/' + this.ctrl.panel.drillDownUrl;
+            newUrl = newUrl.replace('{param}', id);
+
+            var arr = newUrl.split('?');
+            var params = arr[1].split('=');
+
+            this.ctrl.locationService.path(arr[0]).search(params[0], params[1]);
+            this.ctrl.$scope.$apply();
           }
         }, {
           key: 'createPopup',

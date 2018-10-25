@@ -4,8 +4,8 @@ import L from './libs/leaflet';
 /* eslint-disable id-length, no-unused-vars */
 
 const tileServers = {
-  'CartoDB Positron': { url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', subdomains: 'abcd'},
-  'CartoDB Dark': {url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', subdomains: 'abcd'}
+  'CartoDB Positron': { url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', subdomains: 'abcd' },
+  'CartoDB Dark': { url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', subdomains: 'abcd' }
 };
 
 export default class WorldMap {
@@ -33,7 +33,7 @@ export default class WorldMap {
   }
 
   createLegend() {
-    this.legend = window.L.control({position: 'bottomleft'});
+    this.legend = window.L.control({ position: 'bottomleft' });
     this.legend.onAdd = () => {
       this.legend._div = window.L.DomUtil.create('div', 'info legend');
       this.legend.update();
@@ -44,7 +44,7 @@ export default class WorldMap {
       const thresholds = this.ctrl.data.thresholds;
       let legendHtml = '';
       legendHtml += '<div class="legend-item"><i style="background:' + this.ctrl.panel.colors[0] + '"></i> ' +
-          '&lt; ' + thresholds[0] + '</div>';
+        '&lt; ' + thresholds[0] + '</div>';
       for (let index = 0; index < thresholds.length; index += 1) {
         legendHtml +=
           '<div class="legend-item"><i style="background:' + this.ctrl.panel.colors[index + 1] + '"></i> ' +
@@ -125,6 +125,8 @@ export default class WorldMap {
       location: dataPoint.key
     });
 
+    circle.on('click', (e) => { this.onCircleClick(e, dataPoint.locationId) });
+
     this.createPopup(circle, dataPoint.locationName, dataPoint.valueRounded);
     return circle;
   }
@@ -143,10 +145,21 @@ export default class WorldMap {
     return (circleSizeRange * dataFactor) + circleMinSize;
   }
 
+  onCircleClick(e, id) {
+    let newUrl = `d/${this.ctrl.panel.drillDownUrl}`;
+    newUrl = newUrl.replace('{param}', id)
+
+    let arr = newUrl.split('?')
+    let params = arr[1].split('=')
+
+    this.ctrl.locationService.path(arr[0]).search(params[0],params[1]);
+    this.ctrl.$scope.$apply()
+  }
+
   createPopup(circle, locationName, value) {
     const unit = value && value === 1 ? this.ctrl.panel.unitSingular : this.ctrl.panel.unitPlural;
     const label = (locationName + ': ' + value + ' ' + (unit || '')).trim();
-    circle.bindPopup(label, {'offset': window.L.point(0, -2), 'className': 'worldmap-popup', 'closeButton': this.ctrl.panel.stickyLabels});
+    circle.bindPopup(label, { 'offset': window.L.point(0, -2), 'className': 'worldmap-popup', 'closeButton': this.ctrl.panel.stickyLabels });
 
     circle.on('mouseover', function onMouseOver(evt) {
       const layer = evt.target;

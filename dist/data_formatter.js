@@ -190,6 +190,7 @@ System.register(['lodash', './geohash'], function (_export, _context) {
                   locationName: datapoint[_this3.ctrl.panel.tableQueryOptions.labelField] || 'n/a',
                   locationLatitude: latitude,
                   locationLongitude: longitude,
+                  locationId: datapoint[_this3.ctrl.panel.drilldownIdField],
                   value: datapoint[_this3.ctrl.panel.tableQueryOptions.metricField],
                   valueFormatted: datapoint[_this3.ctrl.panel.tableQueryOptions.metricField],
                   valueRounded: 0
